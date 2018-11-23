@@ -1,0 +1,31 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h1 class="mx-auto" style="margin-top: 5%; margin-bottom: 5%;">Category {{ category.name }}</h1>
+        </div>
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Content</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for article in articles %}
+                    <tr>
+                        <th scope="row">{{ article.id }}</th>
+                        <td>{{ article.title }}</td>
+                        <td>{{ article.content }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
