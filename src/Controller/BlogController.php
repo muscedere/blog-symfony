@@ -10,11 +10,13 @@ namespace App\Controller;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Article;
 use App\Entity\Category;
+//use App\Form\ArticleSearchType;
+use App\Form\CategoryType;
+use Symfony\Component\HttpFoundation\Request;
 
 
 class BlogController extends AbstractController
@@ -22,24 +24,49 @@ class BlogController extends AbstractController
     /**
      * Show all row from article's entity
      *
-     * @Route("/",name="homepage")
+     * @Route("/", name="blog_index")
      * @return Response A response instance
      */
-    public function index(): Response
+    public function index (): Response
     {
         $articles = $this->getDoctrine()
             ->getRepository(Article::class)
             ->findAll();
-
         if (!$articles) {
             throw $this->createNotFoundException(
                 'No article found in article\'s table.'
             );
         }
-
         return $this->render(
-            'blog/index.html.twig',
-            ['articles' => $articles]
+            'blog/index.html.twig', [
+                'articles' => $articles,
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * form add Category
+     *
+     * @Route("/blog/category", name="blog_addCategory")
+     * @return Response A response instance
+     */
+    public function addCategory(Request $request): Response
+    {
+        $category = new Category ();
+        $form = $this->createForm(
+            CategoryType::class, $category);
+        $form->handleRequest($request);
+        $em = $this->getDoctrine()
+            ->getManager();
+        if ($form->isSubmitted()) {
+            $em->persist($category);
+            $em->flush();
+        }
+        return $this->render(
+            'blog/searchCategory.html.twig', [
+                'form' => $form->createView(),
+            ]
         );
     }
 
@@ -54,6 +81,7 @@ class BlogController extends AbstractController
         $articles = $category->getArticles();
         return $this->render('blog/category.html.twig', ['articles' => $articles, 'category' => $category]);
     }
+
     /**
      * @Route("/category/all", name="blog_show_category")
      */

@@ -1,0 +1,21 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}Create Category{% endblock %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h1 class="mx-auto">Create a new category</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                {{ form_start(form) }}
+                {{ form_row(form.name) }}
+                <button class="btn">{{ button_label|default('Save') }}</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
