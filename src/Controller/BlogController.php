@@ -14,9 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Article;
 use App\Entity\Category;
-//use App\Form\ArticleSearchType;
 use App\Form\CategoryType;
 use Symfony\Component\HttpFoundation\Request;
+use App\Form\ArticleType;
+
 
 
 class BlogController extends AbstractController
@@ -24,10 +25,10 @@ class BlogController extends AbstractController
     /**
      * Show all row from article's entity
      *
-     * @Route("/", name="blog_index")
+     * @Route("/blog/form", name="blog_index")
      * @return Response A response instance
      */
-    public function index (): Response
+    public function index(): Response
     {
         $articles = $this->getDoctrine()
             ->getRepository(Article::class)
@@ -40,6 +41,29 @@ class BlogController extends AbstractController
         return $this->render(
             'blog/index.html.twig', [
                 'articles' => $articles,
+            ]
+        );
+    }
+
+    /**
+     * form add Article
+     *
+     * @Route("/form/article", name="blog_addArticle")
+     * @return Response A response instance
+     */
+    public function addArticle (Request $request): Response
+    {
+        $article = new Article ();
+        $form = $this->createForm(
+            ArticleType::class, $article);
+        $form->handleRequest($request);
+        $em = $this->getDoctrine()
+            ->getManager();
+        if($form->isSubmitted()){
+            $em->persist($article);
+            $em->flush();}
+        return $this->render(
+            'blog/addArticle.html.twig', [
                 'form' => $form->createView(),
             ]
         );
@@ -48,7 +72,7 @@ class BlogController extends AbstractController
     /**
      * form add Category
      *
-     * @Route("/blog/category", name="blog_addCategory")
+     * @Route("/form/category", name="blog_addCategory")
      * @return Response A response instance
      */
     public function addCategory(Request $request): Response
@@ -104,7 +128,7 @@ class BlogController extends AbstractController
      *
      * @param string $slug The slugger
      *
-     * @Route("/{slug<^[a-z0-9-]+$>}",
+     * @Route("/blog/{slug<^[a-z0-9-]+$>}",
      *     defaults={"slug" = null},
      *     name="blog_show")
      * @return Response A response instance

@@ -1,0 +1,28 @@
+{% extends './base.html.twig' %}
+
+
+{% block stylesheets %}{% endblock %}
+
+{% block body %}
+
+
+    <h1>Add an article : </h1>
+
+
+    {{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.content) }}
+
+    {{ form_end(form) }}
+
+    <button class="btn">{{ button_label|default('Save') }}</button>
+
+
+
+
+
+
+    <a href="{{ path('homepage') }}">
+        Back to homepage.
+    </a>
+{% endblock %}
